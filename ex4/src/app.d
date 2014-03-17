@@ -26,14 +26,14 @@ class Loop {
 
 }
 
-class Message {
+struct Message {
   zmq_msg_t _msg;
 
-  this() {
+  void initialize() {
     (&_msg).zmq_msg_init();
   }
 
-  this(string data) {
+  void initialize(string data) {
     (&_msg).zmq_msg_init_data(cast(void*)data.ptr, data.length, null, null);
   }
 
@@ -47,6 +47,18 @@ class Message {
 
   bool more() {
     return (&_msg).zmq_msg_more() == 1;
+  }
+
+  static Message opCall() {
+    Message m;
+    m.initialize();
+    return m;
+  }
+
+  static Message opCall(string data) {
+    Message m;
+    m.initialize(data);
+    return m;
   }
 
   char[] toString() {
@@ -89,7 +101,7 @@ class SocketBase {
     Message[] msgs;
 
     do {
-      auto msg = new Message();
+      auto msg = Message();
       while (!msg.recv(_socket))
         yield();
       msgs ~= msg;
@@ -122,15 +134,12 @@ shared static this() {
   dealer.connect(addr);
 
   foreach (x; iota(1, 11)) {
-    writeln("sending message");
-
-    auto req = new Message("test: %d".format(x));
+    auto req = Message("test: %d".format(x));
     dealer.send(req);
   }
 
   foreach (x; iota(1, 11)) {
     auto msgs = router.recv();
-    foreach (m; msgs)
-      writeln(m);
+    writeln(msgs[1]);
   }
 }
