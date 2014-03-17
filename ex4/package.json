@@ -1,0 +1,12 @@
+{
+  "name": "zmq_test",
+  "targetName": "ZmqTest",
+  "description": "A sample zeromq project.",
+  "authors": ["Eric Cornelius"],
+  "homepage": "http://github.com/EricMCornelius",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "zeromq": "~master",
+    "vibe-d": "~master"
+  }
+}
