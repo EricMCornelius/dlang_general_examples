@@ -1,0 +1,12 @@
+{
+  "name": "vibe_test",
+  "targetName": "VibeTest",
+  "description": "A sample vibe.d project.",
+  "authors": ["Eric Cornelius"],
+  "versions": ["VibeDefaultMain"],
+  "homepage": "http://github.com/EricMCornelius",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "vibe-d": "~master"
+  }
+}
