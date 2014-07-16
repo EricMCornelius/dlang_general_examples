@@ -21,7 +21,8 @@ class SecureClient {
     client.connect(addr, port, true);
     client.request(
       (scope req) {
-        req.method = HTTPMethod.GET;
+        req.method = HTTPMethod.POST;
+        req.writeJsonBody(["test": "me"]);
       },
       (scope res) {
 //        writefln("Response: %s", res.bodyReader.readAllUTF8());
@@ -32,5 +33,5 @@ class SecureClient {
 
 shared static this()
 {
-  auto client = new SecureClient("127.0.0.1", 8080);
+  auto client = new SecureClient("localhost", 8080);
 }
