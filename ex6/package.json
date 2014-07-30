@@ -7,6 +7,6 @@
   "homepage": "http://github.com/EricMCornelius",
   "license": "GPL-2.0",
   "dependencies": {
-    "vibe-d": {"path": "/home/ecornelius/Repositories/vibe.d", "version": "~master"}
+    "vibe-d": {"version": "~master"}
   }
 }

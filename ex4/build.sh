@@ -1,1 +1,1 @@
-dub --compiler=dmd --build=debug --force
+dub --build=release --compiler=dmd
