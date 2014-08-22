@@ -1,3 +1,5 @@
 VibeTest
 certs/*
 .dub
+
+HttpsClient
