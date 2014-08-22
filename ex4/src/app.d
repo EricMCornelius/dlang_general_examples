@@ -5,6 +5,7 @@ import std.string;
 import std.array;
 import std.range;
 import vibe.core.core;
+import vibe.core.file;
 
 void printerr() {
   auto errno = zmq_errno();
@@ -59,6 +60,12 @@ struct Message {
     Message m;
     m.initialize(data);
     return m;
+  }
+
+  byte[] data() {
+    auto data = cast(byte*)(&_msg).zmq_msg_data();
+    auto size = (&_msg).zmq_msg_size();
+    return data[0..size];
   }
 
   char[] toString() {
@@ -123,23 +130,38 @@ class Router : SocketBase {
 }
 
 shared static this() {
-  auto router = new Router();
-  auto dealer = new Dealer();
-
   auto addr = "tcp://127.0.0.1:9999";
-  writeln("binding router");
-  router.bind(addr);
+  auto max = 1000000;
 
-  writeln("connecting dealer");
-  dealer.connect(addr);
+  auto sender = runTask({
+    auto dealer = new Dealer();
 
-  foreach (x; iota(1, 11)) {
-    auto req = Message("test: %d".format(x));
-    dealer.send(req);
-  }
+    writeln("connecting dealer");
+    dealer.connect(addr);
 
-  foreach (x; iota(1, 11)) {
-    auto msgs = router.recv();
-    writeln(msgs[1]);
-  }
+    foreach (x; iota(1, max)) {
+      auto req = Message("test: %d\n".format(x));
+      dealer.send(req);
+    }
+
+    writeln("dealer done");
+  });
+
+  auto receiver = runTask({
+    auto router = new Router();
+    auto output = openFile("output.log", FileMode.createTrunc);
+
+    writeln("binding router");
+    router.bind(addr);
+
+    foreach (x; iota(1, max)) {
+      auto msgs = router.recv();
+//      output.write(cast(ubyte[])msgs[1].data());
+    }
+
+    writeln("router done");
+    output.finalize();
+  });
+
+  writeln("done");
 }
